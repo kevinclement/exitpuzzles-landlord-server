@@ -1,0 +1,29 @@
+{
+  "name": "exitpuzzles-pi",
+  "version": "0.0.2",
+  "description": "Code the run the control server software for exitpuzzles rooms",
+  "author": "Kevin Clement <kevin.clement@gmail.com>",
+  "private": true,
+  "scripts": {
+    "start": "node index.js",
+    "verbose": "DEBUG=true node index.js",
+    "ngrok": "node scripts/ngrok.updateConfig.js",
+    "stopservice": "sudo systemctl stop exitpuzzles.service",
+    "clean": "node scripts/cleanOldOps.js"
+  },
+  "dependencies": {
+    "bluetooth-serial-port": "^2.1.6",
+    "firebase": "^4.12.0",
+    "play-sound": "^1.1.2",
+    "winston": "^3.0.0-rc3"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinclement/exitpuzzles-pi.git"
+  },
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  }
+}
