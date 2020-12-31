@@ -35,5 +35,6 @@ module.exports = class TNTState {
         this.password = ''
         this.overrideWinButton = false;
         this.finished = false;
+        this.solved = false;
     }
 }

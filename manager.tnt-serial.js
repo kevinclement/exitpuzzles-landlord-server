@@ -123,17 +123,30 @@ module.exports = class TntManager extends Manager {
                         case "overrideWinButton":
                             newState.overrideWinButton = (p[1] === 'true')
                             break
-
                         case "finished":
                             newState.finished = (p[1] === 'true')
                             break
+                        case "solved":
+                            newState.solved = (p[1] === 'true')
+                            break    
                     }
                 })
 
                 // check if any interesting state toggled from last time
                 if (newState.finished != this.state.finished) {
-                    this.logger.log(this.logPrefix + 'bomb finished.')
+                    this.logger.log(this.logPrefix + 'bomb finished (' + newState.solved ? 'WON' : 'LOST' + ').')
+
                     this.EE.emit(EVENTS.BOMB_FINISHED);
+
+                    // solved state tracks where it was a win or lose
+                    if (newState.solved) {
+                        this.audio.play([
+                            'shutdown.fromArduino.wav',
+                            'success.2.wav',
+                            'success.2.wav',
+                            'success.2.wav',
+                            'success.2.wav'], null, 0)
+                    }
                 }
 
                 if (newState.light && !this.state.light) {
@@ -153,6 +166,12 @@ module.exports = class TntManager extends Manager {
                 if (newState.toggles.failing && !this.state.toggles.failing) {
                     this.audio.play(['ahah.wav', 'siren.wav', 'incorrectToggles.wav'], null, 0)
                 }
+
+                // failed
+                // ['bomb.wav', 'bomb.wav', 'bomb.wav', 'bomb.wav'] 100
+
+                // success
+                // 
                 
                 // copy to our state now
                 this.state = newState;
