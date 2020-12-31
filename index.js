@@ -5,6 +5,7 @@ let state = new (require('./state'))({ logger: logger, fb: fb })
 let audio = new (require('./audio'))({ logger: logger, state: state })
 
 let managers = [];
+managers.push(new (require('./manager.compass'))({ name: 'compass', logger: logger, fb: fb, audio: audio }))
 // TODO: add back
 // managers.push(new (require('./manager.laser'))({ name: 'laser', logger: logger, fb: fb }))
 // let tnt = new (require('./manager.tnt'))({ name: 'tnt', logger: logger, fb: fb, state: state, audio: audio })
