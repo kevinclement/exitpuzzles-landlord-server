@@ -146,12 +146,12 @@ module.exports = class TntManager extends Manager {
 
                 // play wire fail audio
                 if (newState.wires.failing && !this.state.wires.failing) {
-                    this.audio.play(['siren.wav', 'warningRedWire.wav'], null, 1000) 
+                    this.audio.play(['ahah.wav', 'siren.wav', 'warningRedWire.wav'], null, 0) 
                 }
 
                 // play toggle fail audio
                 if (newState.toggles.failing && !this.state.toggles.failing) {
-                    this.audio.play(['siren.wav', 'incorrectToggles.wav'], null, 1000)
+                    this.audio.play(['ahah.wav', 'siren.wav', 'incorrectToggles.wav'], null, 0)
                 }
                 
                 // copy to our state now

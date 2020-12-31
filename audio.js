@@ -1,16 +1,27 @@
+const path = require('path');
 var player = require('play-sound')(opts = { player: 'aplay' })
+const EVENTS = require('./events');
 
 module.exports = class Audio {
     constructor(opts) {
         this.logger = opts.logger
-        this.state = opts.state
+        this.EE = opts.EE
         this.queue = []
         this.playing = false
+
+        // don't turn on by default, wait until lid is open
+        this.enabled = false 
+
+        // listen for open event and then turn on audio
+        this.EE.on(EVENTS.BOMB_OPENED, () => {
+            this.logger.log('audio: trunk opened. enabled audio.')
+            this.enabled = true
+        });
     }
 
     play(files, cb, delayInMs) {
 
-        if (!this.state.lightDetected) {
+        if (!this.enabled) {
             this.logger.log('audio: trunk closed. ignoring request to play file.')
             if (cb) cb()
             return;
