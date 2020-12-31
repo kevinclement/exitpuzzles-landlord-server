@@ -146,6 +146,13 @@ module.exports = class TntManager extends Manager {
                             'success.2.wav',
                             'success.2.wav',
                             'success.2.wav'], null, 0)
+                    } else {
+                        this.audio.play([
+                            'bomb.fromArduino.wav',
+                            'bomb.wav',
+                            'bomb.wav',
+                            'bomb.wav', 
+                            'bomb.wav'], null, 0)
                     }
                 }
 
@@ -167,12 +174,6 @@ module.exports = class TntManager extends Manager {
                     this.audio.play(['ahah.wav', 'siren.wav', 'incorrectToggles.wav'], null, 0)
                 }
 
-                // failed
-                // ['bomb.wav', 'bomb.wav', 'bomb.wav', 'bomb.wav'] 100
-
-                // success
-                // 
-                
                 // copy to our state now
                 this.state = newState;
 
