@@ -104,6 +104,7 @@ module.exports = class TntManager extends Manager {
                         case "light":
                             let hasLight = (p[1] === 'true')
                             if (!this.light && hasLight) {
+                                this.logger.log(this.logPrefix + 'bomb opened.')
                                 this.EE.emit(EVENTS.BOMB_OPENED);
                             }
                             this.light = hasLight;
@@ -121,8 +122,14 @@ module.exports = class TntManager extends Manager {
                         case "overrideWinButton":
                             this.overrideWinButton = (p[1] === 'true')
                             break
-                        case "solved":
-                            this.solved = (p[1] === 'true')
+
+                        case "finished":
+                            let hasFinished = (p[1] === 'true')
+                            if (!this.finished && hasFinished) {
+                                this.logger.log(this.logPrefix + 'bomb finished.')
+                                this.EE.emit(EVENTS.BOMB_FINISHED);
+                            }
+                            this.finished = hasFinished
                             break
                     }
                 })
@@ -133,7 +140,6 @@ module.exports = class TntManager extends Manager {
                     gitDate: this.gitDate
                 })
 
-                // TODO: should we split into better subsections?  e.g. toggles\
                 ref.update({
                     time: this.time,
                     toggles: this.toggles,
@@ -143,7 +149,7 @@ module.exports = class TntManager extends Manager {
                     key: this.key,
                     password: this.password,
                     overrideWinButton: this.overrideWinButton,
-                    solved: this.solved,
+                    finished: this.finished,
                 })
             }
         });
@@ -182,7 +188,7 @@ module.exports = class TntManager extends Manager {
         this.key = false;
         this.password = ''
         this.overrideWinButton = false;
-        this.solved = false;
+        this.finished = false;
 
         // now connect to serial
         this.connect()

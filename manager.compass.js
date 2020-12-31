@@ -23,6 +23,10 @@ module.exports = class CompassManager extends Manager {
         this.EE.on(EVENTS.BOMB_OPENED, () => {
             this.enable();
         });
+        
+        this.EE.on(EVENTS.BOMB_FINISHED, () => {
+            this.disable();
+        });
 
         // setup supported commands
         // handlers['compass.foo'] = (s,cb) => {
