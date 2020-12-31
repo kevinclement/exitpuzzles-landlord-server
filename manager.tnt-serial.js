@@ -1,4 +1,5 @@
 let Manager = require('./manager.serial')
+const EVENTS = require('./events');
 
 module.exports = class TntManager extends Manager {
     constructor(opts) {
@@ -15,6 +16,8 @@ module.exports = class TntManager extends Manager {
             handlers: handlers,
             incoming:incoming,
         })
+
+        this.EE = opts.EE;
 
         // setup supported commands
         // handlers['compass.foo'] = (s,cb) => {
@@ -99,7 +102,12 @@ module.exports = class TntManager extends Manager {
                             break
                           
                         case "light":
-                            this.light = (p[1] === 'true')
+                            let hasLight = (p[1] === 'true')
+                            if (!this.light && hasLight) {
+                                this.EE.emit(EVENTS.BOMB_OPENED);
+                            }
+                            this.light = hasLight;
+                            
                             break
                         case "exampleDoor":
                             this.exampleDoor = (p[1] === 'true')

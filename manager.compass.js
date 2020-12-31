@@ -1,4 +1,5 @@
 let Manager = require('./manager.serial')
+const EVENTS = require('./events');
 
 module.exports = class CompassManager extends Manager {
     constructor(opts) {
@@ -15,6 +16,13 @@ module.exports = class CompassManager extends Manager {
             handlers: handlers,
             incoming:incoming,
         })
+
+        this.EE = opts.EE;
+
+        // hookup any global listeners 
+        this.EE.on(EVENTS.BOMB_OPENED, () => {
+            this.enable();
+        });
 
         // setup supported commands
         // handlers['compass.foo'] = (s,cb) => {
