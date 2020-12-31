@@ -21,7 +21,7 @@ module.exports = class TntManager extends Manager {
         this.EE = opts.EE;
 
         // setup supported commands
-        // handlers['compass.foo'] = (s,cb) => {
+        // handlers['tnt.foo'] = (s,cb) => {
         //   this.foo = true
         //   this.write('someCommand', err => {
         //     if (err) {
@@ -36,14 +36,7 @@ module.exports = class TntManager extends Manager {
         {
             pattern:/.*status=(.*)/,
             match: (m) => {
-                // variables that track state changes across all options
-                // this is needed so I don't rely on ordering while parsing
-                // I think to do this properly this split foreach would result in a status
-                // object when its done.  then I take that object and update "this" and the database
-                // It would allow me to compare "this" to the parsed object fully and not rely on order
-                
-                // TODO: maybe a TNTState class
-                // TODO: when I switch to this parsedStatus, change hasLight and hasFinished
+                // Use a parsed object so I can look at the parsing as a whole and not rely on ordering
                 let newState = new TNTState();
 
                 m[1].split(',').forEach((s)=> {
@@ -118,13 +111,7 @@ module.exports = class TntManager extends Manager {
                             break
                           
                         case "light":
-                            let hasLight = (p[1] === 'true')
-                            if (!this.state.light && hasLight) {
-                                this.logger.log(this.logPrefix + 'bomb opened.')
-                                this.EE.emit(EVENTS.BOMB_OPENED);
-                            }
-                            newState.light = hasLight;
-                            
+                            newState.light = (p[1] === 'true');
                             break
                         case "exampleDoor":
                             newState.exampleDoor = (p[1] === 'true')
@@ -140,15 +127,21 @@ module.exports = class TntManager extends Manager {
                             break
 
                         case "finished":
-                            let hasFinished = (p[1] === 'true')
-                            if (!this.state.finished && hasFinished) {
-                                this.logger.log(this.logPrefix + 'bomb finished.')
-                                this.EE.emit(EVENTS.BOMB_FINISHED);
-                            }
-                            newState.finished = hasFinished
+                            newState.finished = (p[1] === 'true')
                             break
                     }
                 })
+
+                // check if any interesting state toggled from last time
+                if (newState.finished != this.state.finished) {
+                    this.logger.log(this.logPrefix + 'bomb finished.')
+                    this.EE.emit(EVENTS.BOMB_FINISHED);
+                }
+
+                if (newState.light && !this.state.light) {
+                    this.logger.log(this.logPrefix + 'bomb opened.')
+                    this.EE.emit(EVENTS.BOMB_OPENED);
+                }
 
                 ref.child('info/build').update({
                     version: newState.version,
@@ -167,6 +160,9 @@ module.exports = class TntManager extends Manager {
                     overrideWinButton: newState.overrideWinButton,
                     finished: newState.finished,
                 })
+
+                // copy to our state now
+                this.state = newState;
             }
         });
 
