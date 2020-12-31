@@ -5,8 +5,10 @@ let state = new (require('./state'))({ logger: logger, fb: fb })
 let audio = new (require('./audio'))({ logger: logger, state: state })
 
 let compass = new (require('./manager.compass'))({ name: 'compass', logger: logger, fb: fb });
+let tnt = new (require('./manager.tnt-serial'))({ name: 'tnt', logger: logger, fb: fb });
 let managers = [];
-managers.push(compass)
+managers.push(compass);
+managers.push(tnt);
 
 // TODO: add back
 // let tnt = new (require('./manager.tnt'))({ name: 'tnt', logger: logger, fb: fb, state: state, audio: audio })
