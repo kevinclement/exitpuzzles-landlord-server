@@ -140,19 +140,15 @@ module.exports = class TntManager extends Manager {
 
                     // solved state tracks where it was a win or lose
                     if (newState.solved) {
-                        this.audio.play([
-                            'shutdown.fromArduino.wav',
-                            'success.2.wav',
-                            'success.2.wav',
-                            'success.2.wav',
-                            'success.2.wav'], null, 0)
+                        audio.playTimed('shutdown.fromArduino.wav', 0);
+                        audio.playTimed('success.3.wav', 5500);
                     } else {
-                        this.audio.play([
-                            'bomb.fromArduino.wav',
-                            'bomb.wav',
-                            'bomb.wav',
-                            'bomb.wav', 
-                            'bomb.wav'], null, 0)
+                        audio.playTimed('bomb.fromArduino.wav', 0);
+                        audio.playTimed('bomb.wav', 0);
+                        audio.playTimed('bomb.fromArduino.wav', 2000);
+                        audio.playTimed('bomb.wav', 1500);
+                        audio.playTimed('bomb.fromArduino.wav', 4000);
+                        audio.playTimed('bomb.wav', 3200);
                     }
                 }
 

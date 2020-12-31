@@ -69,4 +69,20 @@ module.exports = class Audio {
             }
         })
     }
+
+    playTimed(fileName, delay) {
+        setTimeout(() => {
+            let fullFile = path.join(__dirname, 'audio', fileName); 
+
+            this.logger.log('audio: playing timed \'' + fileName + '\'...') 
+            player.play(fullFile, (err) => {
+                if (err) {
+                    this.logger.logger.error('audio: Timed Exception: ' + err)
+                } else {
+                    this.logger.log('audio: timed played (\'' + fileName + '\').')
+                }
+            })
+        }, delay);
+        
+    }
 }
