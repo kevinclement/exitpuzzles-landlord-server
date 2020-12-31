@@ -1,26 +1,29 @@
 {
-  "name": "exitpuzzles-pi",
-  "version": "0.0.2",
-  "description": "Code the run the control server software for exitpuzzles rooms",
+  "name": "landlord-server",
+  "version": "2.0.0",
+  "description": "Code the runs the control server software for exitpuzzles landlord room",
   "author": "Kevin Clement <kevin.clement@gmail.com>",
   "private": true,
   "scripts": {
-    "start": "node index.js",
+    "dev": "node index.js",
     "verbose": "DEBUG=true node index.js",
-    "ngrok": "node scripts/ngrok.updateConfig.js",
-    "stopservice": "sudo systemctl stop exitpuzzles.service",
-    "clean": "node scripts/cleanOldOps.js"
+    "tail": "tail -f /var/log/syslog | grep exitpuzzles-landlord-server",
+    "stop": "sudo systemctl stop exitpuzzles.landlord.service",
+    "start": "sudo systemctl start exitpuzzles.landlord.service",
+    "restart": "sudo systemctl restart exitpuzzles.landlord.service",
+    "status": "sudo systemctl status exitpuzzles.landlord.service"
   },
   "dependencies": {
-    "bluetooth-serial-port": "^2.1.6",
-    "firebase": "^4.12.0",
-    "play-sound": "^1.1.2",
-    "winston": "^3.0.0-rc3"
+    "bluetooth-serial-port": "^2.2.6",
+    "firebase": "^6.4.0",
+    "play-sound": "^1.1.3",
+    "serialport": "^7.1.5",
+    "winston": "3.2.1"
   },
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kevinclement/exitpuzzles-pi.git"
+    "url": "git+https://github.com/kevinclement/exitpuzzles-landlord-server.git"
   },
   "engines": {
     "node": ">= 6.0.0",

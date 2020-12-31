@@ -16,9 +16,9 @@ module.exports = class WinstonFirebase extends Transport {
   log(info, callback) {
     let line = info[Symbol.for('message')];
 
-    this.db.ref().child('logs').push({
-         timestamp: (new Date()).toString(),
-         data: line
+    this.db.ref('landlord').child('logs').push({
+      timestamp: (new Date()).toString(),
+      data: line
     });
 
     // Perform the writing to the remote service
