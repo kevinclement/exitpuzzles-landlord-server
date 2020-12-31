@@ -4,10 +4,11 @@ let logger = new (require('./logging'))
 let state = new (require('./state'))({ logger: logger, fb: fb })
 let audio = new (require('./audio'))({ logger: logger, state: state })
 
+let compass = new (require('./manager.compass'))({ name: 'compass', logger: logger, fb: fb });
 let managers = [];
-managers.push(new (require('./manager.compass'))({ name: 'compass', logger: logger, fb: fb, audio: audio }))
+managers.push(compass)
+
 // TODO: add back
-// managers.push(new (require('./manager.laser'))({ name: 'laser', logger: logger, fb: fb }))
 // let tnt = new (require('./manager.tnt'))({ name: 'tnt', logger: logger, fb: fb, state: state, audio: audio })
 // let morse = new (require('./manager.morse'))({ name: 'morse', logger: logger, fb: fb, state: state })
 // let painting = new (require('./manager.painting'))({ name: 'painting', logger: logger, fb: fb, state: state })

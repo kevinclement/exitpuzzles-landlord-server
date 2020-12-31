@@ -17,15 +17,15 @@ module.exports = class CompassManager extends Manager {
         })
 
         // setup supported commands
-        handlers['compass.foo'] = (s,cb) => {
-            // this.forced = true
-            // this.write('increment', err => {
-            //     if (err) {
-            //         s.ref.update({ 'error': err });
-            //     }
-            //     cb()
-            // });
-        }
+        // handlers['compass.foo'] = (s,cb) => {
+        //   this.foo = true
+        //   this.write('someCommand', err => {
+        //     if (err) {
+        //       s.ref.update({ 'error': err });
+        //     }
+        //     cb()
+        //   });
+        // }
 
         // setup supported device output parsing
         incoming.push(
@@ -80,9 +80,6 @@ module.exports = class CompassManager extends Manager {
             }
         });
 
-        // this.audio = opts.audio
-
-        // this.solved = false
         this.version = "unknown"
         this.gitDate = "unknown"
         this.buildDate = "unknown"
@@ -98,21 +95,21 @@ module.exports = class CompassManager extends Manager {
         this.connect()
     }
 
-    // coinChange() {
-    //     this.logger.log(this.logPrefix + 'detected coin change...')
-    //     var _solved = this.solved
-    //     this.play("coin.wav", () => {
-    //         if (_solved) {
-    //             this.allCoins()
-    //         }
-    //     })
-    // }
+    enable() {
+        this.logger.log(this.logPrefix + 'sending enable command...')
+        this.write('enable', err => {
+            if (err) {
+                this.logger.logger.error(this.logPrefix + 'Exception: ' + err)
+            }
+        });
+    }
 
-    // play(fName, cb) {
-    //     this.audio.play(fName, (err) => {
-    //         if (cb) {
-    //             cb()
-    //         }
-    //     })
-    // }
+    disable() {
+        this.logger.log(this.logPrefix + 'sending disable command...')
+        this.write('disable', err => {
+            if (err) {
+                this.logger.logger.error(this.logPrefix + 'Exception: ' + err)
+            }
+        });
+    }
 }
