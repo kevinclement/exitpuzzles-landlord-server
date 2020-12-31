@@ -9,7 +9,7 @@ let state = new (require('./state'))({ logger: logger, fb: fb })
 let audio = new (require('./audio'))({ logger: logger, state: state })
 
 let compass = new (require('./manager.compass'))({ name: 'compass', logger: logger, fb: fb, EE:EE });
-let tnt = new (require('./manager.tnt-serial'))({ name: 'tnt', logger: logger, fb: fb, EE:EE  });
+let tnt = new (require('./manager.tnt-serial'))({ name: 'tnt', logger: logger, fb: fb, EE:EE, audio:audio  });
 let managers = [];
 managers.push(compass);
 managers.push(tnt);

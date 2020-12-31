@@ -19,6 +19,7 @@ module.exports = class TntManager extends Manager {
         })
 
         this.EE = opts.EE;
+        this.audio = opts.audio;
 
         // setup supported commands
         // handlers['tnt.foo'] = (s,cb) => {
@@ -80,9 +81,6 @@ module.exports = class TntManager extends Manager {
                             newState.toggles.toggle5 = (p[1] === 'true')
                             break
                         case "togglesFailing":
-                            // TODO: AUDIO
-                            // Note: need to take into account override so prob can't just call here
-                            // I could change ordering in the status but that seems fragile
                             newState.toggles.failing = (p[1] === 'true')
                             break
                         case "overrideToggles":
@@ -143,6 +141,22 @@ module.exports = class TntManager extends Manager {
                     this.EE.emit(EVENTS.BOMB_OPENED);
                 }
 
+                // TODO: test and debug when both failures occur
+                // Prioritize toggles audio first
+
+                // play wire fail audio
+                if (newState.wires.failing && !this.state.wires.failing) {
+                    this.audio.play(['siren.wav', 'warningRedWire.wav'], null, 1000) 
+                }
+
+                // play toggle fail audio
+                if (newState.toggles.failing && !this.state.toggles.failing) {
+                    this.audio.play(['siren.wav', 'incorrectToggles.wav'], null, 1000)
+                }
+                
+                // copy to our state now
+                this.state = newState;
+
                 ref.child('info/build').update({
                     version: newState.version,
                     date: newState.buildDate,
@@ -159,10 +173,7 @@ module.exports = class TntManager extends Manager {
                     password: newState.password,
                     overrideWinButton: newState.overrideWinButton,
                     finished: newState.finished,
-                })
-
-                // copy to our state now
-                this.state = newState;
+                })                
             }
         });
 
