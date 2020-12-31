@@ -1,5 +1,0 @@
-authtoken: <MY_TOKEN_HERE>
-tunnels:
-   ssh:
-     proto: tcp
-     addr: 22

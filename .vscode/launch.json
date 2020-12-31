@@ -15,12 +15,6 @@
             "request": "launch",
             "name": "Debug ops",
             "program": "${workspaceFolder}/scripts/cleanOldOps.js"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Debug ngrok update",
-            "program": "${workspaceFolder}/scripts/ngrok.updateConfig.js"
         }
     ]
 }
