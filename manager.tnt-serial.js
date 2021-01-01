@@ -22,15 +22,14 @@ module.exports = class TntManager extends Manager {
         this.audio = opts.audio;
 
         // setup supported commands
-        // handlers['tnt.foo'] = (s,cb) => {
-        //   this.foo = true
-        //   this.write('someCommand', err => {
-        //     if (err) {
-        //       s.ref.update({ 'error': err });
-        //     }
-        //     cb()
-        //   });
-        // }
+        handlers['tnt.refreshTime'] = (s,cb) => {
+          this.write('status', err => {
+            if (err) {
+              s.ref.update({ 'error': err });
+            }
+            cb()
+          });
+        }
 
         // setup supported device output parsing
         incoming.push(
