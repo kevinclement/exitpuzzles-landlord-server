@@ -122,6 +122,15 @@ module.exports = class TntManager extends Manager {
             });
         }
 
+        handlers['tnt.reset'] = (s,cb) => {
+            this.write('reset', err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+              cb()
+            });
+        }
+
         // setup supported device output parsing
         incoming.push(
         {

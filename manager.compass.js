@@ -29,15 +29,14 @@ module.exports = class CompassManager extends Manager {
         });
 
         // setup supported commands
-        // handlers['compass.foo'] = (s,cb) => {
-        //   this.foo = true
-        //   this.write('someCommand', err => {
-        //     if (err) {
-        //       s.ref.update({ 'error': err });
-        //     }
-        //     cb()
-        //   });
-        // }
+        handlers['compass.reset'] = (s,cb) => {
+          this.write('reboot', err => {
+            if (err) {
+              s.ref.update({ 'error': err });
+            }
+            cb()
+          });
+        }
 
         // setup supported device output parsing
         incoming.push(
