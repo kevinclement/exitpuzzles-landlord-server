@@ -100,8 +100,6 @@ module.exports = class TntManager extends Manager {
                             newState.wires.wire4 = (p[1] === 'true')
                             break
                         case "wiresFailing":
-                            // TODO: AUDIO
-                            // Note: need to take into account override so prob can't just call here
                             newState.wires.failing = (p[1] === 'true')
                             break
                         case "overrideBadWire":
