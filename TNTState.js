@@ -7,7 +7,8 @@ module.exports = class TNTState {
         this.time = {
             hours:  0,
             minutes: 0,
-            seconds: 0
+            seconds: 0,
+            timestamp: 0,
         }
 
         this.toggles = {

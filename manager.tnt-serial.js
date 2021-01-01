@@ -59,9 +59,7 @@ module.exports = class TntManager extends Manager {
                                 newState.time.hours = parseInt(tm[1])
                                 newState.time.minutes = parseInt(tm[2])
                                 newState.time.seconds = parseInt(tm[3])
-
-                                // TODO: verify we still need this
-                                //state.timestamp = (new Date()).getTime()
+                                newState.time.timestamp = (new Date()).getTime()
                             }
                             break
 
