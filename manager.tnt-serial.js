@@ -97,6 +97,24 @@ module.exports = class TntManager extends Manager {
             });
         }
 
+        handlers['tnt.disableDoorAjarSensor'] = (s,cb) => {
+            this.write('doorajar 0', err => {
+                if (err) {
+                    s.ref.update({ 'error': err });
+                }
+                cb()
+            });
+        }
+
+        handlers['tnt.enableDoorAjarSensor'] = (s,cb) => {
+            this.write('doorajar 1', err => {
+                if (err) {
+                    s.ref.update({ 'error': err });
+                }
+                cb()
+            });
+        }
+
         handlers['tnt.solve'] = (s,cb) => {
             this.write('win', err => {
               if (err) {
@@ -218,6 +236,9 @@ module.exports = class TntManager extends Manager {
                         case "overrideWinButton":
                             newState.overrideWinButton = (p[1] === 'true')
                             break
+                        case "overrideDoorAjar":
+                            newState.overrideDoorAjar = (p[1] === 'true')
+                            break    
                         case "finished":
                             newState.finished = (p[1] === 'true')
                             break
@@ -281,6 +302,7 @@ module.exports = class TntManager extends Manager {
                     key: newState.key,
                     password: newState.password,
                     overrideWinButton: newState.overrideWinButton,
+                    overrideDoorAjar: newState.overrideDoorAjar,
                     finished: newState.finished,
                     solved: newState.solved,
                 })                

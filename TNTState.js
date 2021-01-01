@@ -35,6 +35,7 @@ module.exports = class TNTState {
         this.key = false;
         this.password = ''
         this.overrideWinButton = false;
+        this.overrideDoorAjar = false;
         this.finished = false;
         this.solved = false;
     }
