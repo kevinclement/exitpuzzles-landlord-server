@@ -40,6 +40,15 @@ module.exports = class TntManager extends Manager {
             });
         }
 
+        handlers['tnt.triggerBlink'] = (s,cb) => {
+            this.write('blink', err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+              cb()
+            });
+        }
+
         handlers['tnt.setTime'] = (s,cb) => {
             let op = s.val()
             let hours = op.data.hours;
