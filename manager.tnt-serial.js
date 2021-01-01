@@ -59,6 +59,17 @@ module.exports = class TntManager extends Manager {
             this.audio.play("bomb_disabled.wav");
         }
 
+        handlers['tnt.triggerWireError'] = (s,cb) => {
+            this.write('wires', err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+
+              this.audio.play(['siren.wav', 'incorrectWires.wav'])
+              cb()
+            });
+        }
+
         handlers['tnt.solve'] = (s,cb) => {
             this.write('win', err => {
               if (err) {
@@ -67,7 +78,7 @@ module.exports = class TntManager extends Manager {
               cb()
             });
         }
-
+        
         handlers['tnt.setTime'] = (s,cb) => {
             let op = s.val()
             let hours = op.data.hours;
@@ -205,9 +216,6 @@ module.exports = class TntManager extends Manager {
                     this.logger.log(this.logPrefix + 'bomb opened.')
                     this.EE.emit(EVENTS.BOMB_OPENED);
                 }
-
-                // TODO: test and debug when both failures occur
-                // Prioritize toggles audio first
 
                 // play wire fail audio
                 if (newState.wires.failing && !this.state.wires.failing) {
