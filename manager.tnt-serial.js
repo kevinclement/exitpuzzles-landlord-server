@@ -23,12 +23,37 @@ module.exports = class TntManager extends Manager {
 
         // setup supported commands
         handlers['tnt.refreshTime'] = (s,cb) => {
-          this.write('status', err => {
+          this.write('status ', err => {
             if (err) {
               s.ref.update({ 'error': err });
             }
             cb()
           });
+        }
+
+        handlers['tnt.triggerKey'] = (s,cb) => {
+            this.write('key', err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+              cb()
+            });
+        }
+
+        handlers['tnt.setTime'] = (s,cb) => {
+            let op = s.val()
+            let hours = op.data.hours;
+            let minutes = op.data.minutes;
+            let seconds = op.data.seconds;
+
+            this.logger.log(this.logPrefix + 'setting time to ' + hours + ':' + minutes + ':' + seconds + ' ...');
+            
+            this.write('set ' + hours + ':' + minutes + ':' + seconds, err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+              cb()
+            });
         }
 
         // setup supported device output parsing
