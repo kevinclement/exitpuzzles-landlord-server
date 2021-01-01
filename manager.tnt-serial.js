@@ -69,6 +69,15 @@ module.exports = class TntManager extends Manager {
               cb()
             });
         }
+        
+        handlers['tnt.toggleErrorsOverride'] = (s,cb) => {
+            this.write('stop', err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+              cb()
+            });
+        }
 
         handlers['tnt.solve'] = (s,cb) => {
             this.write('win', err => {

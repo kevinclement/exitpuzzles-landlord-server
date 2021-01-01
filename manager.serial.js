@@ -24,8 +24,7 @@ module.exports = class Manager extends EventEmitter {
             
             // mark in db as connected
             this.ref.child('info').update({
-                isConnected: true,
-                lastActivity: (new Date()).toLocaleString()
+                isConnected: true
             })
 
             this.emit('connected')
@@ -51,9 +50,10 @@ module.exports = class Manager extends EventEmitter {
     }
 
     activity() {
-        this.ref.child('info').update({
-            lastActivity: (new Date()).toLocaleString()
-       })
+        // Turned of this db update because it can cause a weird race between toggle state changes
+        //     this.ref.child('info').update({
+        //         lastActivity: (new Date()).toLocaleString()
+        //     })
     }
 
     data(line) {
