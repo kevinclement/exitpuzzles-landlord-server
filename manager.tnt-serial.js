@@ -59,6 +59,15 @@ module.exports = class TntManager extends Manager {
             this.audio.play("bomb_disabled.wav");
         }
 
+        handlers['tnt.solve'] = (s,cb) => {
+            this.write('win', err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+              cb()
+            });
+        }
+
         handlers['tnt.setTime'] = (s,cb) => {
             let op = s.val()
             let hours = op.data.hours;
