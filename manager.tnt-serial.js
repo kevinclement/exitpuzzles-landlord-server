@@ -282,6 +282,7 @@ module.exports = class TntManager extends Manager {
                     password: newState.password,
                     overrideWinButton: newState.overrideWinButton,
                     finished: newState.finished,
+                    solved: newState.solved,
                 })                
             }
         },
