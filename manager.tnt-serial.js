@@ -79,6 +79,24 @@ module.exports = class TntManager extends Manager {
             });
         }
 
+        handlers['tnt.toggleWireErrorsOverride'] = (s,cb) => {
+            this.write('stopwire', err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+              cb()
+            });
+        }
+
+        handlers['tnt.toggleWinButton'] = (s,cb) => {
+            this.write('stopwin', err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+              cb()
+            });
+        }
+
         handlers['tnt.solve'] = (s,cb) => {
             this.write('win', err => {
               if (err) {
