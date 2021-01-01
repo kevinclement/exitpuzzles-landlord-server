@@ -171,32 +171,6 @@ module.exports = class TntManager extends Manager {
                     this.audio.play(['ahah.wav', 'siren.wav', 'incorrectToggles.wav'], null, 0)
                 }
 
-                // play warning audio for different times
-                if (!this.warnings.tenMinutes &&
-                    newState.time.hours == 0 &&
-                    newState.time.minutes == 10 && 
-                    newState.time.seconds == 0) {
-                    this.logger.log(this.logPrefix + 'warning with 10 minute(s). playing warning.');
-                    this.audio.play('countdown_10min.wav')
-                    this.warnings.tenMinutes = true;
-                }
-        
-
-        // switch(timeLeft) {
-        //     case "10":
-        //       this.audio.play('countdown_10min.wav')
-        //       break;
-        //     case "5":
-        //       this.audio.play('countdown_5min.wav')
-        //       break;
-        //     case "3":
-        //       this.audio.play('countdown_3min.wav')
-        //       break;
-        //     case "1":
-        //       this.audio.play('countdown_1min.wav')
-        //       break;
-        // }
-
                 // copy to our state now
                 this.state = newState;
 
@@ -218,18 +192,34 @@ module.exports = class TntManager extends Manager {
                     finished: newState.finished,
                 })                
             }
+        },
+        {
+            pattern:/Warning: (\d+) minutes remaining./,
+            match: (m) => {
+                let minutes =  m[1]
+                
+                // NOTE: I intentionally kept this seperate from status updates since it seemed more consistent
+                // at one point I coded infered from status but went back to this explicit way.
+                this.logger.log(this.logPrefix + 'warning with ' + minutes + ' minute(s). playing warning.');
+                switch(minutes) {
+                    case "10":
+                        this.audio.play('countdown_10min.wav')
+                        break;
+                        case "5":
+                        this.audio.play('countdown_5min.wav')
+                        break;
+                        case "3":
+                        this.audio.play('countdown_3min.wav')
+                        break;
+                        case "1":
+                        this.audio.play('countdown_1min.wav')
+                        break;
+                }
+            }
         });
 
         // start with unknown tnt state
         this.state = new TNTState();
-
-        // track whether we've played warnings
-        this.warnings = {
-            tenMinutes: false,
-            fiveMinutes: false,
-            threeMinutes: false,
-            oneMinute: false
-        }
 
         // now connect to serial
         this.connect()
