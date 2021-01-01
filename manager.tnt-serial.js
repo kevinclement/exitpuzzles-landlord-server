@@ -49,6 +49,16 @@ module.exports = class TntManager extends Manager {
             });
         }
 
+        handlers['tnt.triggerBlinkWithCode'] = (s,cb) => {
+            this.write('blink', err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+              cb()
+            });
+            this.audio.play("bomb_disabled.wav");
+        }
+
         handlers['tnt.setTime'] = (s,cb) => {
             let op = s.val()
             let hours = op.data.hours;
