@@ -146,6 +146,9 @@ module.exports = class TntManager extends Manager {
                 s.ref.update({ 'error': err });
               }
               cb()
+
+              // Fire global event so others can do any cleanup
+              this.EE.emit(EVENTS.BOMB_RESET);
             });
         }
 
@@ -343,24 +346,6 @@ module.exports = class TntManager extends Manager {
         // now connect to serial
         this.connect()
     }
-
-    // enable() {
-    //     this.logger.log(this.logPrefix + 'sending enable command...')
-    //     this.write('enable', err => {
-    //         if (err) {
-    //             this.logger.logger.error(this.logPrefix + 'Exception: ' + err)
-    //         }
-    //     });
-    // }
-
-    // disable() {
-    //     this.logger.log(this.logPrefix + 'sending disable command...')
-    //     this.write('disable', err => {
-    //         if (err) {
-    //             this.logger.logger.error(this.logPrefix + 'Exception: ' + err)
-    //         }
-    //     });
-    // }
 }
 
 

@@ -1,4 +1,5 @@
 let Manager = require('./manager.bluetooth')
+const EVENTS = require('./events');
 
 module.exports = class PaintingManager extends Manager {
     constructor(opts) {
@@ -15,6 +16,8 @@ module.exports = class PaintingManager extends Manager {
         let handlers = {};
 
         super({ ...opts, bt: bt, handlers: handlers, incoming:incoming })
+
+        this.EE = opts.EE;
 
         // setup supported commands
         handlers['paint.getStatus'] = (s,cb) => {
@@ -169,6 +172,34 @@ module.exports = class PaintingManager extends Manager {
         this.ref = ref
         this.serial = bt
         this.logger = opts.logger
+
+        this.ref.on('value', (snapshot) => {
+            let painting = snapshot.val()
+            if (painting == null) return
+            
+            this.enabled = painting.enabled
+            this.enabledOverride = painting.enabledOverride
+        })
+
+        // listen for full resets and reset our override state (by design)
+        this.EE.on(EVENTS.BOMB_RESET, () => {
+            this.logger.log(this.logPrefix +'tnt reset, setting enabledOverride to false');
+            ref.update({ enabledOverride: false })
+
+            this.logger.log(this.logPrefix + 'tnt reset, disabling device to wait for light')
+            bt.write('disable\n', (err) => {});
+
+            // not sure about potential race here, so going to premptively update the local state for this one
+            this.enabledOverride = false
+        });
+        
+        // listen for tnt light state changes and update device
+        this.EE.on(EVENTS.BOMB_OPENED, () => {
+            if (!this.enabledOverride) {
+                this.logger.log(this.logPrefix + 'light change detected. enabling device')
+                bt.write('enable\n', (err) => {});
+            }
+        });
     }
     
     activity() {

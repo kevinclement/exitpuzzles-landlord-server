@@ -10,9 +10,9 @@ let audio = new (require('./audio'))({ logger: logger, EE: EE })
 
 let managers = [];
 // managers.push(new (require('./manager.compass'))({ name: 'compass', logger: logger, fb: fb, EE:EE }));
-// managers.push(new (require('./manager.tnt'))({ name: 'tnt', logger: logger, fb: fb, EE:EE, audio:audio  }));
+managers.push(new (require('./manager.tnt'))({ name: 'tnt', logger: logger, fb: fb, EE:EE, audio:audio  }));
 // managers.push(new (require('./manager.morse-bt'))({ name: 'morse', logger: logger, fb: fb }))
-managers.push(new (require('./manager.painting-bt'))({ name: 'painting', logger: logger, fb: fb }))
+managers.push(new (require('./manager.painting-bt'))({ name: 'painting', logger: logger, fb: fb, EE: EE }))
 
 // TODO: add back
 // let painting = new (require('./manager.painting'))({ name: 'painting', logger: logger, fb: fb, state: state })
