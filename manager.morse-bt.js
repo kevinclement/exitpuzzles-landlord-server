@@ -35,7 +35,7 @@ module.exports = class MorseManager extends Manager {
             this.logger.log('clue: sending \'' + cluestr + '\'...')
             bt.write(cluestr + '\n', (err) => {
                 if (err) {
-                    snapshot.ref.update({ 'error': err });
+                    s.ref.update({ 'error': err });
                 }
 
                 this.logger.log('clue: sent.');
@@ -47,8 +47,6 @@ module.exports = class MorseManager extends Manager {
         this.ref = ref
         this.serial = bt
         this.logger = opts.logger
-
-        this.enabled = false
     }
     
     activity() {
