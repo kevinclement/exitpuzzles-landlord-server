@@ -152,6 +152,18 @@ module.exports = class TntManager extends Manager {
             });
         }
 
+        handlers['tnt.playAudio'] = (s,cb) => {
+            let file = s.val().file
+            let fileName = file.file
+
+            this.audio.play(fileName, (err) => {
+                if (err) {
+                    s.ref.update({ 'error': err });
+                }
+                cb()
+            })
+        }
+
         // setup supported device output parsing
         incoming.push(
         {

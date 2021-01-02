@@ -12,11 +12,7 @@ let managers = [];
 // managers.push(new (require('./manager.compass'))({ name: 'compass', logger: logger, fb: fb, EE:EE }));
 managers.push(new (require('./manager.tnt'))({ name: 'tnt', logger: logger, fb: fb, EE:EE, audio:audio  }));
 // managers.push(new (require('./manager.morse-bt'))({ name: 'morse', logger: logger, fb: fb }))
-managers.push(new (require('./manager.painting-bt'))({ name: 'painting', logger: logger, fb: fb, EE: EE }))
-
-// TODO: add back
-// let painting = new (require('./manager.painting'))({ name: 'painting', logger: logger, fb: fb, state: state })
-// let audioManager = new (require('./manager.audio'))({ name: 'audio', logger: logger, fb: fb, state: state, audio: audio })
+// managers.push(new (require('./manager.painting-bt'))({ name: 'painting', logger: logger, fb: fb, EE: EE }))
 
 // set audio, can't inject because of circular dep
 state.setAudio(audio)
@@ -51,17 +47,6 @@ fb.db.ref('landlord/operations').orderByChild('completed').equalTo(null).on("chi
     managers.forEach((m) => {
         m.handle(snapshot);
     });
-
-    // TODO: REMOVE once all other managers are updated
-    // // send to morse device
-    // morse.handle(snapshot);
-
-    // // send to painting device
-    // painting.handle(snapshot);
-
-    // // send to the audio handler
-    // audioManager.handle(snapshot);
-
  });
 
 // update started time and set a ping timer
