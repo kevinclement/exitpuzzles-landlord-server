@@ -1,13 +1,14 @@
 const BluetoothSerialPort = require('bluetooth-serial-port');
 
 const CONNECTION_TIMEOUT_MS = 10000;
-let CONNECTION_TRIES = 6;
+let CONNECTION_TRIES = 15;
 
 module.exports = class Bluetooth {
     constructor(opts) {
         this.logger = opts.logger;
         this.address = opts.address;
         this.channel = opts.channel;
+        this.outputCallback = undefined;
         this.logPrefix = 'bluetooth: ' + opts.name + ': ';
 
         this.rfcomm = new BluetoothSerialPort.BluetoothSerialPort();
@@ -20,7 +21,7 @@ module.exports = class Bluetooth {
         // only log the connection tries for a few times so we don't spam the logs since it 
         // will be offline most cases
         if (CONNECTION_TRIES > 0) {
-            this.log('Connecting to ' + this.address + ' ...')
+            this.log(this.logPrefix + 'Connecting to ' + this.address + ' ...')
             CONNECTION_TRIES--;
         } else {
             if (CONNECTION_TRIES === 0) {
@@ -36,7 +37,7 @@ module.exports = class Bluetooth {
         this.rfcomm.removeListener('data', this.buffer.onData);
 
         this.rfcomm.connect(this.address, this.channel, () => {
-            CONNECTION_TRIES = 6;
+            CONNECTION_TRIES = 15;
             this.logger.log(this.logPrefix + 'Connected.');
             this.connectionStartTime = null;
 
@@ -46,6 +47,16 @@ module.exports = class Bluetooth {
             // tell consumer that we're connected
             if (cb) cb();
         });
+    }
+
+    disconnect() {
+        this.logger.log(this.logPrefix + 'Disconnecting ' + this.address + '...');
+        this.rfcomm && this.rfcomm.close();
+        this.connectionStartTime = null;
+    }
+
+    setOutputCallback(cb) {
+        this.outputCallback = cb;
     }
 
     isConnecting() {
@@ -67,16 +78,22 @@ module.exports = class Bluetooth {
 
     onLine(line) {
         this.logger.log(this.logPrefix + '< ' + line);
+        if (this.outputCallback) {
+            this.outputCallback(line);
+        }
     }
 
     write(msg, cb) {
         if (!this.isOpen()) {
-            this.logger.logger.error(this.logPrefix + 'Trying to write to device but not yet connected.');
+            let err = this.logPrefix + 'Trying to write to device but not yet connected.'
+            this.logger.logger.error(err);
+            cb(err);
+            return
         }
 
         this.logger.log(this.logPrefix + '> ' + msg);
 
-        this.rfcomm.write(new Buffer(msg, 'utf-8'), function(err, bytesWritten) {
+        this.rfcomm.write(Buffer.from(msg, 'utf-8'), (err, bytesWritten) => {
             if (err) this.logger.logger.error(this.logPrefix + err);
 
             if (cb) cb(err);
