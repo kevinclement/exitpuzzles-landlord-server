@@ -55,9 +55,6 @@ fb.db.ref('landlord/operations').orderByChild('completed').equalTo(null).on("chi
     });
 
     // TODO: REMOVE once all other managers are updated
-    // // send to tnt device
-    // tnt.handle(snapshot);
-
     // // send to morse device
     // morse.handle(snapshot);
 
