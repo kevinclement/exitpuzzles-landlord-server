@@ -4,18 +4,13 @@ let EE = new EventEmitter();
 
 let fb = new (require('./firebase'))
 let logger = new (require('./logging'))
-
-let state = new (require('./state'))({ logger: logger, fb: fb })
 let audio = new (require('./audio'))({ logger: logger, EE: EE })
 
 let managers = [];
-// managers.push(new (require('./manager.compass'))({ name: 'compass', logger: logger, fb: fb, EE:EE }));
+managers.push(new (require('./manager.compass'))({ name: 'compass', logger: logger, fb: fb, EE:EE }));
 managers.push(new (require('./manager.tnt'))({ name: 'tnt', logger: logger, fb: fb, EE:EE, audio:audio  }));
-// managers.push(new (require('./manager.morse-bt'))({ name: 'morse', logger: logger, fb: fb }))
-// managers.push(new (require('./manager.painting-bt'))({ name: 'painting', logger: logger, fb: fb, EE: EE }))
-
-// set audio, can't inject because of circular dep
-state.setAudio(audio)
+managers.push(new (require('./manager.morse-bt'))({ name: 'morse', logger: logger, fb: fb }))
+managers.push(new (require('./manager.painting-bt'))({ name: 'painting', logger: logger, fb: fb, EE: EE }))
 
 // might want to turn this off while doing dev, so I have a flag for it
 let ENABLE_FIREBASE_LOGS = true;
