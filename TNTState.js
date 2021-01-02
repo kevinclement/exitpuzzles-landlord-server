@@ -38,5 +38,6 @@ module.exports = class TNTState {
         this.overrideDoorAjar = false;
         this.finished = false;
         this.solved = false;
+        this.timeLeftSolved = '';
     }
 }

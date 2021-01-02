@@ -244,7 +244,10 @@ module.exports = class TntManager extends Manager {
                             break
                         case "solved":
                             newState.solved = (p[1] === 'true')
-                            break    
+                            break
+                        case "timeLeftSolved":
+                            newState.timeLeftSolved = p[1]
+                            break                                    
                     }
                 })
 
@@ -305,6 +308,7 @@ module.exports = class TntManager extends Manager {
                     overrideDoorAjar: newState.overrideDoorAjar,
                     finished: newState.finished,
                     solved: newState.solved,
+                    timeLeftSolved: newState.timeLeftSolved,
                 })                
             }
         },
