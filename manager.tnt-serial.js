@@ -202,17 +202,17 @@ module.exports = class TntManager extends Manager {
                             newState.toggles.override = (p[1] === 'true')
                             break
                         
-                        case "wire1":
-                            newState.wires.wire1 = (p[1] === 'true')
+                        case "wireD":
+                            newState.wires.wireD = p[1]
                             break
                         case "wire2":
-                            newState.wires.wire2 = (p[1] === 'true')
+                            newState.wires.wire2 = p[1]
                             break
                         case "wire3":
-                            newState.wires.wire3 = (p[1] === 'true')
+                            newState.wires.wire3 = p[1]
                             break
                         case "wire4":
-                            newState.wires.wire4 = (p[1] === 'true')
+                            newState.wires.wire4 = p[1]
                             break
                         case "wiresFailing":
                             newState.wires.failing = (p[1] === 'true')
