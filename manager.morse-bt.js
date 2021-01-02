@@ -1,4 +1,4 @@
-let Manager = require('./manager')
+let Manager = require('./manager.bluetooth')
 
 module.exports = class MorseManager extends Manager {
     constructor(opts) {
@@ -9,31 +9,66 @@ module.exports = class MorseManager extends Manager {
             logger: opts.logger
          });
 
-        let handlers = [
-            new (require('./handler.clue'))({ ...opts, bt: bt }),
-        ];
+        let ref = opts.fb.db.ref('landlord/devices/morse')
 
-        super({ ...opts, bt: bt, handlers: handlers })
+        let incoming = [];
+        let handlers = {};
 
-        this.morseRef = opts.fb.db.ref('morse')
+        super({ ...opts, bt: bt, handlers: handlers, incoming:incoming })
+
+        // setup supported commands
+        handlers['morse.clue'] = (s,cb) => {
+            let clue = s.val().clue
+            let cluestr = ''
+
+            // if errorType, that means we need to send it as feedback
+            // the arduino is setup so that if you send @ in front of string it interprets it as feedback/error
+            if (clue.errorType) {
+                cluestr += '@'
+            }
+            cluestr += clue.line1
+
+            if (clue.line2 !== '') {
+                cluestr += '#' + clue.line2
+            }
+
+            this.logger.log('clue: sending \'' + cluestr + '\'...')
+            bt.write(cluestr + '\n', (err) => {
+                if (err) {
+                    snapshot.ref.update({ 'error': err });
+                }
+
+                this.logger.log('clue: sent.');
+                cb()
+            });
+        }
+        
+
+        this.ref = ref
+        this.serial = bt
+        this.logger = opts.logger
+
+        this.enabled = false
     }
-
+    
     activity() {
-        // update last operation in db so we can show in UI
-        this.morseRef.update({
-            lastActivity: (new Date()).toLocaleString()
-        })
+        // Don't update the last activity for now, as it causes weirdness with race conditions on site
+        //     this.ref.child('info').update({
+        //         lastActivity: (new Date()).toLocaleString()
+        //    })
     }
 
-    connecting() {
-        this.morseRef.update({
-            isConnected: false
-        })
-    }
+   connecting() {
+       // NOTE: while connecting, mark device as disabled, since it defaults to that
+       this.ref.child('info').update({
+           isConnected: false
+       })
+   }
 
-    connected() {
-        this.morseRef.update({
-            isConnected: true
-        })
+   connected() {
+       this.ref.child('info').update({
+           isConnected: true,
+           // SEE ABOVE: lastActivity: (new Date()).toLocaleString()
+       })
     }
 }

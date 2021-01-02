@@ -8,14 +8,12 @@ let logger = new (require('./logging'))
 let state = new (require('./state'))({ logger: logger, fb: fb })
 let audio = new (require('./audio'))({ logger: logger, EE: EE })
 
-let compass = new (require('./manager.compass'))({ name: 'compass', logger: logger, fb: fb, EE:EE });
-let tnt = new (require('./manager.tnt'))({ name: 'tnt', logger: logger, fb: fb, EE:EE, audio:audio  });
 let managers = [];
-managers.push(compass);
-managers.push(tnt);
+// managers.push(new (require('./manager.compass'))({ name: 'compass', logger: logger, fb: fb, EE:EE }));
+// managers.push(new (require('./manager.tnt'))({ name: 'tnt', logger: logger, fb: fb, EE:EE, audio:audio  }));
+managers.push(new (require('./manager.morse-bt'))({ name: 'morse', logger: logger, fb: fb }))
 
 // TODO: add back
-// let tnt = new (require('./manager.tnt'))({ name: 'tnt', logger: logger, fb: fb, state: state, audio: audio })
 // let morse = new (require('./manager.morse'))({ name: 'morse', logger: logger, fb: fb, state: state })
 // let painting = new (require('./manager.painting'))({ name: 'painting', logger: logger, fb: fb, state: state })
 // let audioManager = new (require('./manager.audio'))({ name: 'audio', logger: logger, fb: fb, state: state, audio: audio })
