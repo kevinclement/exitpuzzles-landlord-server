@@ -141,6 +141,8 @@ module.exports = class TntManager extends Manager {
         }
 
         handlers['tnt.reset'] = (s,cb) => {
+            // clear out my local state so it doesn't trigger a difference calc
+            this.state = new TNTState();
             this.write('reset', err => {
               if (err) {
                 s.ref.update({ 'error': err });
