@@ -352,6 +352,15 @@ module.exports = class TntManager extends Manager {
                         break;
                 }
             }
+        },
+        {
+            pattern:/Bad wire connection for wire (.)/,
+            match: (m) => {
+                let wire =  m[1]
+                
+                this.logger.log(this.logPrefix + `bad wire '${wire}' detected, playing warning.`)
+                this.audio.play(['siren.wav', 'incorrectWires.wav'])
+            }
         });
 
         // start with unknown tnt state
