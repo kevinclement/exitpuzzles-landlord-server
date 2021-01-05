@@ -22,10 +22,10 @@ module.exports = class TNTState {
         }
 
         this.wires = {
-            wireD: false,
-            wire2: false,
-            wire3: false,
-            wire4: false,
+            wireD: 'U',
+            wire2: 'C',
+            wire3: 'U',
+            wire4: 'U',
             failing: false,
             override: false
         }

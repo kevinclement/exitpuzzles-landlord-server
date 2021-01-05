@@ -298,6 +298,13 @@ module.exports = class TntManager extends Manager {
                 if (newState.wires.failing && !this.state.wires.failing) {
                     this.audio.play(['ahah.wav', 'siren.wav', 'warningRedWire.wav'], null, 0) 
                 }
+                
+                // If redwire is plugged into other spot, play red in c2 file
+                if (newState.wires.wire2 != this.state.wires.wire2 &&
+                    newState.wires.wire2 != 'C' && 
+                    newState.wires.wire2 != 'U') {
+                    this.audio.play(['ahah.wav', 'siren.wav', 'RedInC2.wav'], null, 0) 
+                }
 
                 // play toggle fail audio
                 if (newState.toggles.failing && !this.state.toggles.failing) {
@@ -354,11 +361,10 @@ module.exports = class TntManager extends Manager {
             }
         },
         {
-            pattern:/Bad wire connection for wire (.)/,
+            pattern:/Bad wire connection for black wire/,
             match: (m) => {
-                let wire =  m[1]
-                
-                this.logger.log(this.logPrefix + `bad wire '${wire}' detected, playing warning.`)
+               
+                this.logger.log(this.logPrefix + `bad black wire detected, playing warning.`)
                 this.audio.play(['siren.wav', 'incorrectWires.wav'])
             }
         });
