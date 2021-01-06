@@ -276,10 +276,14 @@ module.exports = class TntManager extends Manager {
 
                     // solved state tracks where it was a win or lose
                     if (newState.solved) {
-                        this.audio.playTimed('success.combined.wav', 0);
+                        newState.playSong = 'WIN';
+                        this.audio.play(['success.combined.wav']);
                     } else {
-                        this.audio.playTimed('failure.combined.wav', 0);
-                        // TODO: Add trigger here in DB when last sound is played
+                        this.audio.play(['failure.combined.wav'], () => 
+                        {
+                            this.logger.log(this.logPrefix + 'explosion sounds finished playing.  triggering failure to play from webpage.')
+                            this.ref.update({playSong: 'FAIL'})
+                        }, 0)
                     }
                 }
 
@@ -327,6 +331,7 @@ module.exports = class TntManager extends Manager {
                     finished: newState.finished,
                     solved: newState.solved,
                     timeLeftSolved: newState.timeLeftSolved,
+                    playSong: newState.playSong,
                 })                
             }
         },

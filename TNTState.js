@@ -39,5 +39,6 @@ module.exports = class TNTState {
         this.finished = false;
         this.solved = false;
         this.timeLeftSolved = '';
+        this.playSong = '';
     }
 }
