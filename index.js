@@ -15,29 +15,29 @@ managers.push(new (require('./manager.painting'))({ name: 'painting', logger: lo
 // might want to turn this off while doing dev, so I have a flag for it
 let ENABLE_FIREBASE_LOGS = true;
 if (ENABLE_FIREBASE_LOGS) {
-    logger.enableFirebase(fb.db);
+  logger.enableFirebase(fb.db, 'landlord/logs/tnt');
 }
 
-logger.log('pi: Started ExitPuzzles Landlord server.');
+logger.log('tnt: Started ExitPuzzles Landlord server.');
 
 // track firebase connect and disconnects and log them so we can see how often it happens
 let _connecting = true;
 fb.db.ref('.info/connected').on('value', function(connectedSnap) {
   if (connectedSnap.val() === true) {
-    logger.log('pi: firebase connected.');
+    logger.log('tnt: firebase connected.');
   } else {
     // dont print an error while its still connecting on first start
     if (_connecting) {
       _connecting = false;
     } else {
-      logger.log('pi: firebase dropped connection!');
+      logger.log('tnt: firebase dropped connection!');
     }
   }
 });
 
 // listen for control operations in the db, filter only ops not completed
 fb.db.ref('landlord/operations').orderByChild('completed').equalTo(null).on("child_added", function(snapshot) {
-    logger.log('pi: received op ' + snapshot.val().command);
+    logger.log('tnt: received op ' + snapshot.val().command);
 
     managers.forEach((m) => {
         m.handle(snapshot);
