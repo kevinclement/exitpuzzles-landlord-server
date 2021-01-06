@@ -276,16 +276,10 @@ module.exports = class TntManager extends Manager {
 
                     // solved state tracks where it was a win or lose
                     if (newState.solved) {
-                        this.audio.playTimed('shutdown.fromArduino.wav', 0);
-                        this.audio.playTimed('success.3.wav', 5500);
+                        this.audio.playTimed('success.combined.wav', 0);
                     } else {
-                        // TODO: should probably just mix these down in audacity
-                        this.audio.playTimed('bomb.fromArduino.wav', 0);
-                        this.audio.playTimed('bomb.wav', 0);
-                        this.audio.playTimed('bomb.fromArduino.wav', 2000);
-                        this.audio.playTimed('bomb.wav', 1500);
-                        this.audio.playTimed('bomb.fromArduino.wav', 4000);
-                        this.audio.playTimed('bomb.wav', 3200);
+                        this.audio.playTimed('failure.combined.wav', 0);
+                        // TODO: Add trigger here in DB when last sound is played
                     }
                 }
 
