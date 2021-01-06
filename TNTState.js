@@ -11,6 +11,7 @@ module.exports = class TNTState {
             timestamp: 0,
         }
 
+        this.lockSolenoid = false;
         this.toggles = {
             toggle1: false,
             toggle2: false,
@@ -33,12 +34,13 @@ module.exports = class TNTState {
         this.light = false;
         this.exampleDoor = false;
         this.key = false;
+        this.keySolenoid = false;
         this.password = ''
         this.overrideWinButton = false;
         this.overrideDoorAjar = false;
         this.finished = false;
         this.solved = false;
         this.timeLeftSolved = '';
-        this.playSong = '';
+        this.playSong = '';       
     }
 }

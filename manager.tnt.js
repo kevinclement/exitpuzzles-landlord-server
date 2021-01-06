@@ -40,6 +40,28 @@ module.exports = class TntManager extends Manager {
             });
         }
 
+        handlers['tnt.triggerKeySolenoid'] = (s,cb) => {
+            let op = s.val()
+            let cmd = op.data.enable ? "1" : "0"
+            this.write('keySolenoid ' + cmd, err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+              cb()
+            });
+        }
+
+        handlers['tnt.triggerLockSolenoid'] = (s,cb) => {
+            let op = s.val()
+            let cmd = op.data.enable ? "1" : "0"
+            this.write('lockSolenoid ' + cmd, err => {
+              if (err) {
+                s.ref.update({ 'error': err });
+              }
+              cb()
+            });
+        }
+
         handlers['tnt.triggerBlink'] = (s,cb) => {
             this.write('blink', err => {
               if (err) {
@@ -218,6 +240,9 @@ module.exports = class TntManager extends Manager {
                         case "overrideToggles":
                             newState.toggles.override = (p[1] === 'true')
                             break
+                        case "lockSolenoid":
+                            newState.lockSolenoid = (p[1] === 'true')
+                            break
                         
                         case "wireD":
                             newState.wires.wireD = p[1]
@@ -246,6 +271,9 @@ module.exports = class TntManager extends Manager {
                             break
                         case "key":
                             newState.key = (p[1] === 'true')
+                            break
+                        case "keySolenoid":
+                            newState.keySolenoid = (p[1] === 'true')
                             break
                         case "password":
                             newState.password = p[1]
@@ -321,10 +349,12 @@ module.exports = class TntManager extends Manager {
                 ref.update({
                     time: newState.time,
                     toggles: newState.toggles,
+                    lockSolenoid: newState.lockSolenoid,
                     wires: newState.wires,
                     light: newState.light,
                     exampleDoor: newState.exampleDoor,
                     key: newState.key,
+                    keySolenoid: newState.keySolenoid,
                     password: newState.password,
                     overrideWinButton: newState.overrideWinButton,
                     overrideDoorAjar: newState.overrideDoorAjar,
