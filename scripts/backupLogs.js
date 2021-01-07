@@ -3,6 +3,7 @@ let fs = require('fs')
 var crypto = require('crypto');
 
 let ROOT = getRootFolder('logs')
+fs.mkdirSync(ROOT, { recursive: true })
 let CONFIG_FNAME = `${ROOT}/config.json`
 
 let CONFIG = { runs: 0 }
@@ -11,7 +12,7 @@ if (fs.existsSync(CONFIG_FNAME)) {
 }
 CONFIG.runs++;
 
-let LIMIT = 3;
+let LIMIT = 11;
 let DB_ROOT_PATH = 'landlord/tmpLog'
 let data = {}
 let last_work_fname = '';
@@ -29,19 +30,19 @@ setInterval(() => {
     if (rows_found == 0) {
         CONFIG.lastKey = last_work_key
         CONFIG.runs = runs
-        
-        fs.mkdirSync(ROOT, { recursive: true })
-        fs.writeFileSync(CONFIG_FNAME, JSON.stringify(CONFIG, null, 2))
-        fs.writeFileSync(last_work_fname, JSON.stringify(data, null, 2))
         console.log("DONE.")
         process.exit();
     } else {
-        // start more work
-        rows_found = 0;
-        dumpLogs(DB_ROOT_PATH, last_work_key, ++runs)
-    }
-    
+        // write out file
+        fs.writeFileSync(CONFIG_FNAME, JSON.stringify(CONFIG, null, 2))
+        fs.writeFileSync(last_work_fname, JSON.stringify(data, null, 2))
 
+        rows_found = 0;
+        data = {};
+
+        // start more work
+        dumpLogs(DB_ROOT_PATH, last_work_key, ++runs)
+    } 
 }, 2000);
 
 // start the backup
