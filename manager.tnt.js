@@ -298,20 +298,22 @@ module.exports = class TntManager extends Manager {
 
                 // check if any interesting state toggled from last time
                 if (newState.finished != this.state.finished) {
-                    this.logger.log(this.logPrefix + 'bomb finished (' + newState.solved ? 'WON' : 'LOST' + ').')
+                    let res = newState.solved ? 'WON' : 'LOST'
+                    this.logger.log(this.logPrefix + `bomb finished (${res}).`)
 
                     this.EE.emit(EVENTS.BOMB_FINISHED);
 
                     // solved state tracks where it was a win or lose
                     if (newState.solved) {
-                        newState.playSong = 'WIN';
-                        this.audio.play(['success.combined.wav']);
+                        setTimeout(()=>{
+                            this.ref.update({playSong: 'WIN'});
+                        }, 6000);
+                        this.audio.play(['success.combined.wav'], null, 250);
                     } else {
-                        this.audio.play(['failure.combined.wav'], () => 
-                        {
-                            this.logger.log(this.logPrefix + 'explosion sounds finished playing.  triggering failure to play from webpage.')
-                            this.ref.update({playSong: 'FAIL'})
-                        }, 0)
+                        setTimeout(()=>{
+                            this.ref.update({playSong: 'FAIL'});
+                        }, 7000);
+                        this.audio.play(['failure.combined.wav']);
                     }
                 }
 
@@ -323,13 +325,6 @@ module.exports = class TntManager extends Manager {
                 // play wire fail audio
                 if (newState.wires.failing && !this.state.wires.failing) {
                     this.audio.play(['ahah.wav', 'siren.wav', 'warningRedWire.wav'], null, 0) 
-                }
-                
-                // If redwire is plugged into other spot, play red in c2 file
-                if (newState.wires.wire2 != this.state.wires.wire2 &&
-                    newState.wires.wire2 != 'C' && 
-                    newState.wires.wire2 != 'U') {
-                    this.audio.play(['ahah.wav', 'siren.wav', 'RedInC2.wav'], null, 0) 
                 }
 
                 // play toggle fail audio
@@ -396,8 +391,15 @@ module.exports = class TntManager extends Manager {
                 this.logger.log(this.logPrefix + `bad black wire detected, playing warning.`)
                 this.audio.play(['siren.wav', 'incorrectWires.wav'])
             }
+        },
+        {
+            pattern:/Permanent penalty: red wire plugged into wrong spot/,
+            match: (m) => {
+                this.logger.log(this.logPrefix + `red wire replaced into wrong slot.`)
+                this.audio.play(['ahah.wav', 'siren.wav', 'RedInC2.wav'], null, 0) 
+            }
         });
-
+        
         // start with unknown tnt state
         this.state = new TNTState();
 
