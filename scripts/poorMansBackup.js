@@ -3,7 +3,7 @@ let fs = require('fs')
 
 let ROOT = getRootFolder();
 
-console.log(`Backup up DBs ...`)
+console.log(`Backup Firebase DBs ...`)
 
 let dbs = ['landlord', 'museum'];
 
