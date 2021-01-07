@@ -16,6 +16,8 @@ let DB_ROOT_PATH = 'landlord/tmpLog'
 let data = {}
 let last_work_fname = '';
 let last_work_key = '';
+let rows_found = 0;
+let runs = CONFIG.runs;
 
 // set timer to check if we're done with work
 // and if so dump json to file and exit
@@ -24,15 +26,25 @@ setInterval(() => {
     // NOTE: I might not understand how the scheduler works
     if (last_work_key == '') return;
 
-    CONFIG.lastKey = last_work_key
+    if (rows_found == 0) {
+        CONFIG.lastKey = last_work_key
+        CONFIG.runs = runs
+        
+        fs.mkdirSync(ROOT, { recursive: true })
+        fs.writeFileSync(CONFIG_FNAME, JSON.stringify(CONFIG, null, 2))
+        fs.writeFileSync(last_work_fname, JSON.stringify(data, null, 2))
+        console.log("DONE.")
+        process.exit();
+    } else {
+        // start more work
+        rows_found = 0;
+        dumpLogs(DB_ROOT_PATH, last_work_key, ++runs)
+    }
     
-    fs.mkdirSync(ROOT, { recursive: true })
-    fs.writeFileSync(CONFIG_FNAME, JSON.stringify(CONFIG, null, 2))
-    fs.writeFileSync(last_work_fname, JSON.stringify(data, null, 2))
-    console.log("DONE.")
-    process.exit();
-}, 250);
 
+}, 2000);
+
+// start the backup
 dumpLogs(DB_ROOT_PATH, CONFIG.lastKey, CONFIG.runs)
 
 function dumpLogs(logsPath, lastKey, runNumber) {
@@ -73,6 +85,7 @@ function dumpLogs(logsPath, lastKey, runNumber) {
         // sync with interval 
         //   NOTE: I need to learn how this works in nodejs
         last_work_key = s.key
+        rows_found++;
     })
 }
 
