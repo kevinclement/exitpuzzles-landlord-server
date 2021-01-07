@@ -6,7 +6,10 @@ let ROOT = getRootFolder();
 console.log(`Backup up DBs ...`)
 
 let dbs = ['landlord', 'museum'];
-let tables = ['devices','status'];
+
+// NOTE: missing ['logs'], too big to dump like this
+//   'logs' and 'operations' might get too big to dump and might have to be removed
+let tables = ['devices','status', 'runs', 'operations'];
 
 let refCount = 0;
 let dumpCount = 0;
@@ -21,7 +24,9 @@ dbs.forEach(db => {
             let val = s.val()
 
             fs.mkdirSync(tableFolder, { recursive: true })
-            fs.writeFileSync(fName, JSON.stringify(val, null, 2))
+            data = val == null ? {} : val;
+
+            fs.writeFileSync(fName, JSON.stringify(data, null, 2))
 
             if (++dumpCount == refCount) {
                 console.log("DONE.")
