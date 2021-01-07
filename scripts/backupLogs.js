@@ -12,34 +12,25 @@ if (fs.existsSync(CONFIG_FNAME)) {
 CONFIG.runs++;
 
 let LIMIT = 3;
-let TIMEOUT_MS = 3200;
 let DB_ROOT_PATH = 'landlord/tmpLog'
 let data = {}
-let timeout = null
-let last_work_timestamp = 0;
 let last_work_fname = '';
+let last_work_key = '';
 
 // set timer to check if we're done with work
 // and if so dump json to file and exit
 setInterval(() => {
     // sync with work being done on query
     // NOTE: I might not understand how the scheduler works
-    if (last_work_timestamp == 0) return;
+    if (last_work_key == '') return;
 
-    // let now = (new Date()).getTime()
-    // let elapsed = now - last_work_timestamp;
-
-    // // TODO: I might not need this, since when testing these always showed up
-    // // after my query, might be able to rely on js scheduler
-
-    // console.log(`elapsed: ${elapsed} ${last_work_timestamp}`);
-    // if (elapsed > TIMEOUT_MS) {
-        fs.mkdirSync(ROOT, { recursive: true })
-        fs.writeFileSync(CONFIG_FNAME, JSON.stringify(CONFIG, null, 2))
-        fs.writeFileSync(last_work_fname, JSON.stringify(data, null, 2))
-        console.log("DONE.")
-        process.exit();
-    // }  
+    CONFIG.lastKey = last_work_key
+    
+    fs.mkdirSync(ROOT, { recursive: true })
+    fs.writeFileSync(CONFIG_FNAME, JSON.stringify(CONFIG, null, 2))
+    fs.writeFileSync(last_work_fname, JSON.stringify(data, null, 2))
+    console.log("DONE.")
+    process.exit();
 }, 250);
 
 dumpLogs(DB_ROOT_PATH, CONFIG.lastKey, CONFIG.runs)
@@ -61,34 +52,27 @@ function dumpLogs(logsPath, lastKey, runNumber) {
 
     let logsRef = fb.db.ref(`/${logsPath}`).orderByKey().limitToFirst(LIMIT);
 
-    if (CONFIG.lastKey && CONFIG.lastKey != '') {
-        logsRef = logsRef.startAt(CONFIG.lastKey)
+    if (lastKey && lastKey != '') {
+        logsRef = logsRef.startAt(lastKey)
     }
 
     logsRef.on('child_added', (s) => {
         let log = s.val()
 
         // if lastKey in config, skip first element since we'll already have it in last backup
-        if (s.key == CONFIG.lastKey) {
+        if (s.key == lastKey) {
             console.log(`skipping already stored ${s.key}...`)
             return;    
         }
 
         console.log(`${s.key}  : ${log.timestamp}  : ${log.data}`)
-        CONFIG.lastKey = s.key
 
         // add to our json object
         data[s.key] = s.toJSON();
 
-        last_work_timestamp = (new Date()).getTime()
-        
-        // // Nerd.  I don't know when to tell we've hit the end other then just setting
-        // // a timer to timeout.  I cant just count limit because we might not reach that many
-        // // don't know of a better way right now
-        // timeout = setTimeout(() =>
-        // {
-            
-        // }, TIMEOUT_MS);
+        // sync with interval 
+        //   NOTE: I need to learn how this works in nodejs
+        last_work_key = s.key
     })
 }
 
