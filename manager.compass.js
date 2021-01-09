@@ -28,6 +28,10 @@ module.exports = class CompassManager extends Manager {
             this.disable();
         });
 
+        this.EE.on(EVENTS.BOMB_NIGHT_TIME_OUT, () => {
+            this.off();
+        });
+
         // setup supported commands
         handlers['compass.reset'] = (s,cb) => {
           this.write('reboot', err => {
@@ -118,6 +122,15 @@ module.exports = class CompassManager extends Manager {
     disable() {
         this.logger.log(this.logPrefix + 'sending disable command...')
         this.write('disable', err => {
+            if (err) {
+                this.logger.logger.error(this.logPrefix + 'Exception: ' + err)
+            }
+        });
+    }
+
+    off() {
+        this.logger.log(this.logPrefix + 'sending off command...')
+        this.write('off', err => {
             if (err) {
                 this.logger.logger.error(this.logPrefix + 'Exception: ' + err)
             }

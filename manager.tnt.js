@@ -398,6 +398,13 @@ module.exports = class TntManager extends Manager {
                 this.logger.log(this.logPrefix + `red wire replaced into wrong slot.`)
                 this.audio.play(['ahah.wav', 'siren.wav', 'RedInC2.wav'], null, 0) 
             }
+        },
+        {
+            pattern:/Finish time-out./,
+            match: (m) => {
+                this.logger.log(this.logPrefix + `night time out.  turning compass off completely`)
+                this.EE.emit(EVENTS.BOMB_NIGHT_TIME_OUT);
+            }
         });
         
         // start with unknown tnt state

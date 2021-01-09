@@ -17,6 +17,12 @@ module.exports = class Audio {
             this.logger.log('audio: trunk opened. enabled audio.')
             this.enabled = true
         });
+
+        // when the bomb is reset, turn the audio back off
+        this.EE.on(EVENTS.BOMB_RESET, () => { 
+            this.logger.log('audio: trunk reset. disabling audio.')
+            this.enabled = false
+        });
     }
 
     play(files, cb, delayInMs) {
@@ -71,6 +77,11 @@ module.exports = class Audio {
     }
 
     playTimed(fileName, delay) {
+        if (!this.enabled) {
+            this.logger.log('audio: trunk closed. ignoring request to play file timed.')
+            return;
+        }
+
         setTimeout(() => {
             let fullFile = path.join(__dirname, 'audio', fileName); 
 
