@@ -400,6 +400,13 @@ module.exports = class TntManager extends Manager {
             }
         },
         {
+            pattern:/Invalid password tried:/,
+            match: (m) => {
+                this.logger.log(this.logPrefix + `invalid password tried.`)
+                this.audio.play(['ahah.wav'], null, 0) 
+            }
+        },
+        {
             pattern:/Finish time-out./,
             match: (m) => {
                 this.logger.log(this.logPrefix + `night time out.  turning compass off completely`)
