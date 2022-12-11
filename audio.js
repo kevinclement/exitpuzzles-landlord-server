@@ -1,5 +1,5 @@
 const path = require('path');
-var player = require('play-sound')(opts = { player: 'aplay' })
+var player = require('play-sound')(opts = { player: 'omxplayer' })
 const EVENTS = require('./events');
 
 module.exports = class Audio {
