@@ -137,6 +137,24 @@ module.exports = class TntManager extends Manager {
             });
         }
 
+        handlers['tnt.disableExitCode'] = (s,cb) => {
+            this.write('exitcode 0', err => {
+                if (err) {
+                    s.ref.update({ 'error': err });
+                }
+                cb()
+            });
+        }
+
+        handlers['tnt.enableExitCode'] = (s,cb) => {
+            this.write('exitcode 1', err => {
+                if (err) {
+                    s.ref.update({ 'error': err });
+                }
+                cb()
+            });
+        }
+
         handlers['tnt.solve'] = (s,cb) => {
             this.write('win', err => {
               if (err) {
@@ -281,6 +299,9 @@ module.exports = class TntManager extends Manager {
                         case "overrideWinButton":
                             newState.overrideWinButton = (p[1] === 'true')
                             break
+                        case "exitCode":
+                            newState.exitCode = (p[1] === 'true')
+                            break
                         case "overrideDoorAjar":
                             newState.overrideDoorAjar = (p[1] === 'true')
                             break    
@@ -353,6 +374,7 @@ module.exports = class TntManager extends Manager {
                     password: newState.password,
                     overrideWinButton: newState.overrideWinButton,
                     overrideDoorAjar: newState.overrideDoorAjar,
+                    exitCode: newState.exitCode,
                     finished: newState.finished,
                     solved: newState.solved,
                     timeLeftSolved: newState.timeLeftSolved,
